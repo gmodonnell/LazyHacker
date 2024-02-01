@@ -528,6 +528,7 @@ cut -d ',' -f 1,2 parsed_nmap.csv | sort | uniq -u | cat ../shodanHosts.csv - | 
 # sslscan against all ssl targets
 echo -e "${GREEN}Testing SSL... ${RC}"
 sslscan --xml=ssl.xml --targets=ssl.txt
+python3 sslxmlparse.py
 
 # ssh-audit against all ssh targets
 echo -e "${GREEN}Testing SSH... ${RC}"
