@@ -506,15 +506,15 @@ mastercleanup
 
 # Run initial scan
 echo -e "${GREEN}Commencing initial scan... ${RC}"
-#nmap -sU -sS -sV -O -pU:1-1000,T:- --open -oA nmap_scan -iL scope
+nmap -sU -sS -sV -O -pU:1-1000,T:- --open -oA nmap_scan -iL scope
 
 # Run shodan host query against each element in scope.
-#while IFS= read -r line; do
-#	shodan host $line -O shodanoutput
-#done < scope
+while IFS= read -r line; do
+	shodan host $line -O shodanoutput
+done < scope
 
 # Parse generated Shodan File
-#shodan parse --fields ip_str,port --separator , shodanoutput.json.gz > shodanHosts.csv
+shodan parse --fields ip_str,port --separator , shodanoutput.json.gz > shodanHosts.csv
 
 # Parse Output into scope files for utils. 
 echo -e "${GREEN}Parsing scan results... ${RC}"
@@ -527,15 +527,14 @@ cut -d ',' -f 1,2 parsed_nmap.csv | sort | uniq -u | cat ../shodanHosts.csv - | 
 
 # sslscan against all ssl targets
 echo -e "${GREEN}Testing SSL... ${RC}"
-#sslscan --xml=sslresults.xml --targets=ssl.txt
+sslscan --xml=ssl.xml --targets=ssl.txt
 
 # ssh-audit against all ssh targets
 echo -e "${GREEN}Testing SSH... ${RC}"
-#ssh-audit --targets=ssh.txt -v 
+ssh-audit --targets=ssh.txt -v 
 
 # query dehashed if a domain name was given
 if [ $# -gt 0 ] ;then
 	searchTerm=$1
 	dehashQuery
 fi
-
