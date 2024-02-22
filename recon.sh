@@ -67,8 +67,18 @@ fi
 
 
 function dehashQuery () {
-	login=""
-	apikey=""
+	if [[ -v $DEHASHED_USER ]]; then
+		login="$DEHASHED_USER"
+	else
+		echo "Environment Variable \$DEHASHED_USER not found... Quitting."
+		exit 1
+	fi
+	if [[ -v $DEHASHED_API_KEY ]]; then
+		apikey="$DEHASHED_API_KEY"
+	else
+		echo "Environment Variable \$DEHASHED_API_KEY not found... Quitting."
+		exit 1
+	fi
 	echo -e "${GREEN}Argument Provided: Querying Dehashed for $searchTerm${RC}"
 	# cURL API Request, send to json file
 	curl "https://api.dehashed.com/search?query=email:"@$searchTerm"&size=10000" -u $login:$apikey -H 'Accept: application/json' > curledData.json
