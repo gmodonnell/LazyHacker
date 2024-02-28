@@ -516,7 +516,7 @@ mastercleanup
 
 # Run initial scan
 echo -e "${GREEN}Commencing initial scan... ${RC}"
-nmap -Pn -sU -sS -sV -O -pU:1-1000,T:- --open -oA nmap_scan -iL scope
+nmap -Pn -sU -sS -sV -v -O -pU:1-1000,T:- --open -oA nmap_scan -iL scope
 
 # Run shodan host query against each element in scope.
 while IFS= read -r line; do
