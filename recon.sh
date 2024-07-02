@@ -533,7 +533,7 @@ nmapparse
 cd scanparse/
 
 # Generate Host Discovery Appendix File
-cut -d ',' -f 1,2 parsed_nmap.csv | sort | uniq -u | cat ../shodanHosts.csv - | awk -F, '{a[$1] = a[$1] ? a[$1] FS $2 : $2} END {for (i in a) print i "," a[i]}' > appendix.csv
+cut -d ',' -f 1,2 parsed_nmap.csv | sort | uniq -u | cat ../shodanHosts.csv - | awk -F, '{a[$1] = a[$1] ? a[$1] FS $2 : $2} END {for (i in a) print i "," a[i]}' | sed 's/,/:/' > appendix.csv
 
 # sslscan against all ssl targets
 echo -e "${GREEN}Testing SSL... ${RC}"
