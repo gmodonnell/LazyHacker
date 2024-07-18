@@ -42,6 +42,22 @@ echo -e "
 "
 }
 
+function show_help() {
+    echo "Usage: $0 [OPTIONS]"
+    echo "Recon Automation for Internal/External Network Penetration Tests"
+    echo ""
+    echo "Options:"
+    echo "  -h, --help        Show this help message"
+    echo "  -s, --scan        Perform network scan"
+    echo "  -d, --dehashed    Query Dehashed"
+    echo "  --domain DOMAIN   Specify domain for Dehashed query"
+    echo ""
+    echo "Examples:"
+    echo "  $0 -s                    # Only perform network scan"
+    echo "  $0 -d --domain example.com  # Only query Dehashed for example.com"
+    echo "  $0 -s -d --domain example.com  # Perform both scan and Dehashed query"
+}
+
 #Pre-Flight Checklist
 logo
 if [ -f "scope" ]; then 
@@ -509,43 +525,110 @@ report1
 mastercleanup
 }
 
+function phased_scan() {
+    echo -e "${GREEN}Commencing phased scanning...${RC}"
+    
+    #Initial connect scan
+    echo -e "${GREEN}Phase 1: Initial connect scan...${RC}"
+    nmap -sn -oG connect_scan.gnmap -iL scope
+    grep "Status: Up" connect_scan.gnmap | cut -d ' ' -f 2 > live_hosts.txt
+    
+    #Port scan on live hosts
+    echo -e "${GREEN}Phase 2: Port scan on live hosts...${RC}"
+    nmap -sS -sU -p T:1-65535,U:1-1000 --open -oG port_scan.gnmap -iL live_hosts.txt
+    
+    # Extract open ports
+    grep "/open/" port_scan.gnmap | cut -d ' ' -f 4- | tr ',' '\n' | cut -d '/' -f 1 | sort -nu > open_ports.txt
+    
+    #Targeted script scan
+    echo -e "${GREEN}Phase 3: Targeted script scan...${RC}"
+    ports=$(tr '\n' ',' < open_ports.txt | sed 's/,$//')
+    nmap -sV -sC -p $ports -oA nmap_scan -iL live_hosts.txt
+}
+
 # ==================== EXECUTION ====================
 # Everything past here is the execution of the script
 # ===================================================
 
+# Get some variables in there
+DO_SCAN=false
+DO_DEHASHED=false
+DOMAIN=""
+
+# Parse Args
+while [[ $# -gt 0 ]]; do
+    case $1 in
+        -h|--help)
+            show_help
+            exit 0
+            ;;
+        -s|--scan)
+            DO_SCAN=true
+            shift
+            ;;
+        -d|--dehashed)
+            DO_DEHASHED=true
+            shift
+            ;;
+        --domain)
+            DOMAIN="$2"
+            shift 2
+            ;;
+        *)
+            echo "Unknown option: $1"
+            show_help
+            exit 1
+            ;;
+    esac
+done
+
+# Validate Args
+if $DO_DEHASHED && [ -z "$DOMAIN" ]; then
+    echo "Error: --domain is required when using -d/--dehashed"
+    show_help
+    exit 1
+fi
+
+if ! $DO_SCAN && ! $DO_DEHASHED; then
+    echo "Error: At least one action (-s or -d) must be specified"
+    show_help
+    exit 1
+fi
 
 # Run initial scan
-echo -e "${GREEN}Commencing initial scan... ${RC}"
-nmap -Pn -sU -sS -sV -v -O -pU:1-1000,T:- --open -oA nmap_scan -iL scope
+if $DO_SCAN; then
+        echo -e "${GREEN}Commencing initial scan... ${RC}"
+        phased_scan # Previously: nmap -Pn -sU -sS -sV -v -O -pU:1-1000,T:- --open -oA nmap_scan -iL scope
 
-# Run shodan host query against each element in scope.
-while IFS= read -r line; do
-	shodan host $line -O shodanoutput
-done < scope
+        # Run shodan host query against each element in scope.
+        while IFS= read -r line; do
+                shodan host $line -O shodanoutput
+        done < scope
 
-# Parse generated Shodan File
-shodan parse --fields ip_str,port --separator , shodanoutput.json.gz > shodanHosts.csv
+        # Parse generated Shodan File
+        shodan parse --fields ip_str,port --separator , shodanoutput.json.gz > shodanHosts.csv
 
-# Parse Output into scope files for utils. 
-echo -e "${GREEN}Parsing scan results... ${RC}"
-nmapparse
+        # Parse Output into scope files for utils. 
+        echo -e "${GREEN}Parsing scan results... ${RC}"
+        nmapparse
 
-cd scanparse/
+        cd scanparse/
 
-# Generate Host Discovery Appendix File
-cut -d ',' -f 1,2 parsed_nmap.csv | sort | uniq -u | cat ../shodanHosts.csv - | awk -F, '{a[$1] = a[$1] ? a[$1] FS $2 : $2} END {for (i in a) print i "," a[i]}' | sed 's/,/:/' > appendix.csv
+        # Generate Host Discovery Appendix File
+        cut -d ',' -f 1,2 parsed_nmap.csv | sort | uniq -u | cat ../shodanHosts.csv - | awk -F, '{a[$1] = a[$1] ? a[$1] FS $2 : $2} END {for (i in a) print i "," a[i]}' | sed 's/,/:/' > appendix.csv
 
-# sslscan against all ssl targets
-echo -e "${GREEN}Testing SSL... ${RC}"
-sslscan --xml=ssl.xml --targets=ssl.txt
-python3 sslxmlparse.py
+        # sslscan against all ssl targets
+        echo -e "${GREEN}Testing SSL... ${RC}"
+        sslscan --xml=ssl.xml --targets=ssl.txt
+        python3 sslxmlparse.py
 
-# ssh-audit against all ssh targets
-echo -e "${GREEN}Testing SSH... ${RC}"
-ssh-audit --targets=ssh.txt -v 
+        # ssh-audit against all ssh targets
+        echo -e "${GREEN}Testing SSH... ${RC}"
+        ssh-audit --targets=ssh.txt -v 
+fi
 
-# query dehashed if a domain name was given
-if [ $# -gt 0 ] ;then
-	searchTerm=$1
-	dehashQuery
+if $DO_DEHASHED; then
+        # query dehashed if a domain name was given
+        echo -e "${GREEN}Querying Dehashed for $DOMAIN...${RC}"
+        dehashQuery "$DOMAIN"
 fi
