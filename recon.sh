@@ -707,6 +707,8 @@ phased_scan() {
     
     # Extract open ports
     grep "/open/" port_scan.gnmap | cut -d ' ' -f 4- | tr ',' '\n' | cut -d '/' -f 1 | sort -nu > open_ports.txt
+    # Leading spaces are removed
+    sed -i 's/^[[:space:]]*//' open_ports.txt
     
     #Targeted script scan
     echo -e "${GREEN}Phase 3: Targeted script scan...${RC}"
