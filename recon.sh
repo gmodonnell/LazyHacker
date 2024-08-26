@@ -106,20 +106,25 @@ main_menu() {
 
 osint_menu() {
     clear
+    set_domain
+    clear
     echo "OSINT Functions"
-    echo "1. Email Discovery"
-    echo "2. Employee Information Gathering"
-    echo "3. Domain Information"
-    echo "4. Data Breach Check"
-    echo "5. Back to Main Menu"
+    echo "Current Domain: $DOMAIN"
+    echo "1. Set/Change Domain"
+    echo "2. Email Discovery"
+    echo "3. Employee Information Gathering"
+    echo "4. Domain Information"
+    echo "5. Data Breach Check"
+    echo "6. Back to Main Menu"
     read -p "Enter your choice: " choice
 
     case $choice in
-        1) email_discovery ;;
-        2) employee_info ;;
-        3) domain_info ;;
-        4) data_breach_check ;;
-        5) main_menu ;;
+        1) set_domain ; osint_menu ;;
+        2) email_discovery ;;
+        3) employee_info ;;
+        4) domain_info ;;
+        5) data_breach_check ;;
+        6) main_menu ;;
         *) echo "Invalid choice" ; sleep 2 ; osint_menu ;;
     esac
 }
@@ -640,6 +645,10 @@ setup_theharvester() {
     read -p "Press Enter to continue"
 }
 
+set_domain() {
+    read -p "Enter the target domain: " DOMAIN
+}
+
 # ==================== TOOLING ===================
 # These fucntions handle the use of dependencies.
 # ================================================
@@ -758,6 +767,26 @@ network_scanning() {
         echo -e "${GREEN}Testing SSH... ${RC}"
         ssh-audit --targets=ssh.txt -v 
         phased_scan
+}
+
+combined_workflow() {
+    echo "Starting combined workflow (Network Scan + OSINT)"
+    set_domain
+    # Perform network scan
+    network_scanning
+
+    # Perform OSINT functions
+    if [ -n "$DOMAIN" ]; then
+        echo "Performing OSINT for domain: $DOMAIN"
+        email_discovery
+        employee_info
+        domain_info
+        data_breach_check
+    else
+        echo "No domain specified for OSINT. Skipping OSINT functions."
+    fi
+
+    echo "Combined workflow complete."
 }
 
 # ==================== EXECUTION ====================
