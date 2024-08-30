@@ -651,18 +651,8 @@ set_domain() {
 # ================================================
 
 dehashQuery () {
-	if [[ -v $DEHASHED_USER ]]; then
-		echo "Using Dehashed User: $DEHASHED_USER"
-	else
-		echo "Environment Variable \$DEHASHED_USER not found... Quitting."
-		exit 1
-	fi
-	if [[ -v $DEHASHED_API_KEY ]]; then
-		echo "Using Key: $DEHASHED_API_KEY"
-	else
-		echo "Environment Variable \$DEHASHED_API_KEY not found... Quitting."
-		exit 1
-	fi
+	read -p "Enter Dehashed User: " DEHASHED_USER
+        read -p "Enter Dehashed API Key: " DEHASHED_API_KEY
 	echo -e "${GREEN}Argument Provided: Querying Dehashed for $DOMAIN${RC}"
 	# cURL API Request, send to json file
 	curl "https://api.dehashed.com/search?query=email:"@$DOMAIN"&size=10000" -u $DEHASHED_USER:$DEHASHED_API_KEY -H 'Accept: application/json' > curledData.json
