@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+f#!/usr/bin/env bash
 # Recon Automation for Internal/External Network Penetration Tests
 
 # Drip Comes First...
@@ -63,31 +63,10 @@ show_help() {
     echo "  $0 -s -d --domain example.com  # Perform both scan and Dehashed query"
 }
 
-#Pre-Flight Checklist
-logo
-if [ -f "scope" ]; then 
-	: 
-else 
-	echo -e "${RED}No SCOPE... Aborting ${RC}"
-	exit 1
-fi
-if [ "$EUID" -ne 0 ]; then
-	echo -e "${RED}Need SUDO... Aborting ${RC}"
-	exit 1
-fi
-if [ $(dpkg-query -W -f='${Status}' sslscan 2>/dev/null | grep -c "ok installed") -eq 0 ]; then
-	echo -e "${RED}sslscan NOT installed via apt... Aborting ${RC}"
-	exit 1
-elif [ $(dpkg-query -W -f='${Status}' ssh-audit 2>/dev/null | grep -c "ok installed") -eq 0 ]; then 
-	echo -e "${RED}ssh-audit NOT installed via apt... Aborting ${RC}"
-	exit 1
-elif [ $(dpkg-query -W -f='${Status}' jq 2>/dev/null | grep -c "ok installed") -eq 0 ]; then
-	echo -e "${RED}jQuery NOT installed via apt... Aborting ${RC}"
-	exit 1
-fi
 
 main_menu() {
     clear
+    logo
     echo "Welcome to the Recon Automation Tool"
     echo "1. Network Scanning"
     echo "2. OSINT Functions"
@@ -106,8 +85,10 @@ main_menu() {
 
 osint_menu() {
     clear
+    logo
     set_domain
     clear
+    logo
     echo "OSINT Functions"
     echo "Current Domain: $DOMAIN"
     echo "1. Set/Change Domain"
@@ -575,12 +556,6 @@ check_dependencies() {
         exit 1
     fi
 
-    # Check if 'scope' file exists
-    if [ ! -f "scope" ]; then
-        echo "Error: 'scope' file not found."
-        exit 1
-    fi
-
     echo "All dependencies are satisfied."
 }
 
@@ -740,6 +715,12 @@ data_breach_check() {
 }
 
 network_scanning() {
+	if [ -f" scope" ]; then
+		:
+	else
+		echo -e "${RED}ERROR: Scope not found... ABORTING ${RC}"
+		exit 1
+	fi
         echo -e "${GREEN}Commencing initial scan... ${RC}"
         phased_scan # Previously: nmap -Pn -sU -sS -sV -v -O -pU:1-1000,T:- --open -oA nmap_scan -iL scope
 
