@@ -755,7 +755,6 @@ network_scanning() {
         # ssh-audit against all ssh targets
         echo -e "${GREEN}Testing SSH... ${RC}"
         ssh-audit --targets=ssh.txt -v 
-        phased_scan
 }
 
 combined_workflow() {
