@@ -69,8 +69,8 @@ main_menu() {
     logo
     echo "Welcome to the Recon Automation Tool"
     echo "1. Network Scanning"
-    echo "2. OSINT Functions"
-    echo "3. Combined Workflow (Network Scan + OSINT)"
+    echo "2. OSINT Functions ${Y}PARTLY COMPLETE${RC}"
+    echo "3. Combined Workflow (Network Scan + OSINT) ${RED}NOT COMPLETE${RC}"
     echo "4. Exit"
     read -p "Enter your choice: " choice
 
@@ -92,9 +92,9 @@ osint_menu() {
     echo "OSINT Functions"
     echo "Current Domain: $DOMAIN"
     echo "1. Set/Change Domain"
-    echo "2. Email Discovery"
-    echo "3. Employee Information Gathering"
-    echo "4. Domain Information"
+    echo "2. Email Discovery ${RED}NOT COMPLETE${RC}"
+    echo "3. Employee Information Gathering ${RED}NOT COMPLETE${RC}"
+    echo "4. Domain Information ${RED}NOT COMPLETE${RC}"
     echo "5. Data Breach Check"
     echo "6. Back to Main Menu"
     read -p "Enter your choice: " choice
@@ -564,9 +564,6 @@ setup_email_discovery() {
     echo "Email Discovery Setup"
     echo "====================="
     
-    # Get domain
-    read -p "Enter the target domain: " DOMAIN
-    
     # Setup Hunter.io
     read -p "Do you have a Hunter.io API key? (y/n): " has_hunter_key
     if [[ $has_hunter_key == "y" ]]; then
@@ -629,21 +626,11 @@ set_domain() {
 # ================================================
 
 dehashQuery () {
-	if [[ -v $DEHASHED_USER ]]; then
-		login="$DEHASHED_USER"
-	else
-		echo "Environment Variable \$DEHASHED_USER not found... Quitting."
-		exit 1
-	fi
-	if [[ -v $DEHASHED_API_KEY ]]; then
-		apikey="$DEHASHED_API_KEY"
-	else
-		echo "Environment Variable \$DEHASHED_API_KEY not found... Quitting."
-		exit 1
-	fi
-	echo -e "${GREEN}Argument Provided: Querying Dehashed for $searchTerm${RC}"
+	read -p "Enter Dehashed User: " DEHASHED_USER
+        read -p "Enter Dehashed API Key: " DEHASHED_API_KEY
+	echo -e "${GREEN}Argument Provided: Querying Dehashed for $DOMAIN${RC}"
 	# cURL API Request, send to json file
-	curl "https://api.dehashed.com/search?query=email:"@$searchTerm"&size=10000" -u $login:$apikey -H 'Accept: application/json' > curledData.json
+	curl "https://api.dehashed.com/search?query=email:"@$DOMAIN"&size=10000" -u $DEHASHED_USER:$DEHASHED_API_KEY -H 'Accept: application/json' > curledData.json
 	# Parse Everything Out Using jQuery
 	curLength=$(cat curledData.json | jq '.entries | length')
 	index=0
@@ -709,7 +696,7 @@ data_breach_check() {
         echo "Checking for Data Breaches..."
         # query dehashed if a domain name was given
         echo -e "${GREEN}Querying Dehashed for $DOMAIN...${RC}"
-        dehashQuery "$DOMAIN"
+        dehashQuery
         read -p "Press Enter to return to OSINT menu"
         osint_menu
 }
@@ -749,7 +736,6 @@ network_scanning() {
         # ssh-audit against all ssh targets
         echo -e "${GREEN}Testing SSH... ${RC}"
         ssh-audit --targets=ssh.txt -v 
-        phased_scan
 }
 
 combined_workflow() {
