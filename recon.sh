@@ -44,7 +44,7 @@ echo -e "
 	                                                    ${B} .${Y}cXl${U},:c:'${Y}...ll   
         	                                                ckkdlooo      
                                                             
-"
+${RC}"
 }
 
 show_help() {
@@ -65,12 +65,11 @@ show_help() {
 
 
 main_menu() {
-    clear
     logo
     echo "Welcome to the Recon Automation Tool"
     echo "1. Network Scanning"
-    echo "2. OSINT Functions ${Y}PARTLY COMPLETE${RC}"
-    echo "3. Combined Workflow (Network Scan + OSINT) ${RED}NOT COMPLETE${RC}"
+    echo -e "2. OSINT Functions ${Y}PARTLY COMPLETE${RC}"
+    echo -e "3. Combined Workflow (Network Scan + OSINT)${RED} NOT COMPLETE${RC}"
     echo "4. Exit"
     read -p "Enter your choice: " choice
 
@@ -84,11 +83,6 @@ main_menu() {
 }
 
 osint_menu() {
-    clear
-    logo
-    set_domain
-    clear
-    logo
     echo "OSINT Functions"
     echo "Current Domain: $DOMAIN"
     echo "1. Set/Change Domain"
@@ -731,7 +725,8 @@ network_scanning() {
         # sslscan against all ssl targets
         echo -e "${GREEN}Testing SSL... ${RC}"
         sslscan --xml=ssl.xml --targets=ssl.txt
-        python3 sslxmlparse.py
+        # TODO: Fix this shit
+        #python3 sslxmlparse.py
 
         # ssh-audit against all ssh targets
         echo -e "${GREEN}Testing SSH... ${RC}"
