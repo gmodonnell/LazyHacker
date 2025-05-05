@@ -20,7 +20,7 @@ function Invoke-DeHashedQuery {
     Write-Host "Argument Provided: Querying Dehashed for $SearchTerm" -ForegroundColor Green
 
     # Invoke REST API Request
-    $url = "https://api.dehashed.com/search?query=email:@$SearchTerm&size=10000"
+    $url = "https://api.dehashed.com/v2/search?query=email:@$SearchTerm&size=10000"
     $pair = "$($login):$($apikey)"
     $encodedCreds = [System.Convert]::ToBase64String([System.Text.Encoding]::ASCII.GetBytes($pair))
     $headers = @{
@@ -37,7 +37,7 @@ function Invoke-DeHashedQuery {
     $results = @()
     for ($index = 0; $index -lt $curLength; $index++) {
         Write-Progress -Activity "Processing entries" -Status "$index/$curLength" -PercentComplete (($index / $curLength) * 100)
-        
+
         $item = $response.entries[$index]
         $email = $item.email
         $password = $item.password
