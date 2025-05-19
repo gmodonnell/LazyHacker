@@ -21,29 +21,29 @@ RC='\e[39m'
 
 logo () {
 echo -e "
-                                                                 
-	${Y}:dddd,.                                                               
-	 .oooOOoo:.                                                           
-	     .ooOOOoo..                                                      
-        	..loxkO'${B}:${Y}odc                                                 
-	            ...${B}::${Y}OOOOOkl;.                                            
-         	        ${B}'${Y}0OOOOOOOOOOOd${B}..${Y}                                       
-                	 .ok000OOOOkc${B}::${Y}OOdc'                                  
-	                    .coxxxOO${B}::${Y}OOOOOOOklc:c,                           
-        	                .'.${B}::${Y}OOOOOOOOOOOOOdl${B}..${Y}                        
-                	           ${B}::${Y}OOOOOOOOOOOOOO${B}::${Y}oxxo;.                  
-                        	    ${B}:${Y}okOOOOOOOOOOl${B}:::${Y}OOOOOOOOxc,.             
-                                	:dkkOOOOO${B}:::${Y}OOOOOOOOOOk${B}odocc;${Y}.        
-	                                   ,;co${B}:::${Y}OOOOOOOOOOo${B}:oOOl${Y}coddxo:.    
-        	                               ${B}:${Y}OOOOOOOOOx,${B}oOk:${Y}c0Oolc:;,lO;  
-              ${RED}Recon Enthusiast${Y}                 :OOOOOOOOx.${B}kOo${Y}'00${U}cokkkxo${Y};' do 
+
+	${Y}:dddd,.
+	 .oooOOoo:.
+	     .ooOOOoo..
+        	..loxkO'${B}:${Y}odc
+	            ...${B}::${Y}OOOOOkl;.
+         	        ${B}'${Y}0OOOOOOOOOOOd${B}..${Y}
+                	 .ok000OOOOkc${B}::${Y}OOdc'
+	                    .coxxxOO${B}::${Y}OOOOOOOklc:c,
+        	                .'.${B}::${Y}OOOOOOOOOOOOOdl${B}..${Y}
+                	           ${B}::${Y}OOOOOOOOOOOOOO${B}::${Y}oxxo;.
+                        	    ${B}:${Y}okOOOOOOOOOOl${B}:::${Y}OOOOOOOOxc,.
+                                	:dkkOOOOO${B}:::${Y}OOOOOOOOOOk${B}odocc;${Y}.
+	                                   ,;co${B}:::${Y}OOOOOOOOOOo${B}:oOOl${Y}coddxo:.
+        	                               ${B}:${Y}OOOOOOOOOx,${B}oOk:${Y}c0Oolc:;,lO;
+              ${RED}Recon Enthusiast${Y}                 :OOOOOOOOx.${B}kOo${Y}'00${U}cokkkxo${Y};' do
                  v1.3 - for ${U}Maltek Solutions${Y}      'ddkxOO.${B}dOx${Y}.Xk${U}ckkkkkkkx${Y}:, 0
                                 	             .,,c ${B}OO'${Y}dN${U};kkkkkkkkk${Y} : k
-                                        	        . ${B}lk.${Y}kN${U},kkkkkkkk${Y},;. 0 
-                                                	  ${B} ..${Y};N${U}cokkkkko${Y},,..O  
-	                                                    ${B} .${Y}cXl${U},:c:'${Y}...ll   
-        	                                                ckkdlooo      
-                                                            
+                                        	        . ${B}lk.${Y}kN${U},kkkkkkkk${Y},;. 0
+                                                	  ${B} ..${Y};N${U}cokkkkko${Y},,..O
+	                                                    ${B} .${Y}cXl${U},:c:'${Y}...ll
+        	                                                ckkdlooo
+
 ${RC}"
 }
 
@@ -113,7 +113,7 @@ mastercleanup () {
         rm "${outpath}tempinput" "${outpath}ipptemp" "${outpath}closedtemp" "${outpath}summtemp" "${outpath}tempfile" "${outpath}tempfile2" "${outpath}$varTempFile2" "${outpath}inputfile" "${outpath}$varTempFile" "${outpath}$tempfile" "${outpath}$varSummTempFile" "${outpath}webtemp" "${outpath}webtemp2" "${hostportspath}hostptemp" "${outpath}temp.gnmap" "${outpath}temp.csv" "${outpath}sshtemp"> /dev/null 2>&1
 }
 
-makecsv () { 
+makecsv () {
         echo -e "\e[1m\e[93m[>]\e[0m Creating CSV File"
         while read line; do
                 checkport=$(echo $line | grep -e '/open/' -e '/closed')
@@ -136,24 +136,24 @@ makecsv () {
                         fi
                         done < "${outpath}tempfile2"
                 fi
-        done < "${outpath}temp.gnmap" 
+        done < "${outpath}temp.gnmap"
         # finalise and move the file if temp.csv
         if [ -f "${outpath}temp.csv" ]; then
-        echo "HOST,PORT,STATUS,PROTOCOL,SERVICE,VERSION" > "${outpath}parsed_nmap.csv" 
+        echo "HOST,PORT,STATUS,PROTOCOL,SERVICE,VERSION" > "${outpath}parsed_nmap.csv"
         # sort by ip address - 1st.2nd.3rd.4th
-        cat "${outpath}"temp.csv"" |  sort -u | sort -t"," -n -k1 | sort -V >> "${outpath}parsed_nmap.csv" 
+        cat "${outpath}"temp.csv"" |  sort -u | sort -t"," -n -k1 | sort -V >> "${outpath}parsed_nmap.csv"
         echo "       - parsed_nmap.csv"
         fi
-        #cleanup 
+        #cleanup
         rm "${outpath}temp.csv" "${outpath}"tempfile2"" > /dev/null 2>&1
 }
 
 checkcsv () {
-        # checks if the makecsv function has already ran and then sets the tempfile varible - stops repetition as most other functions use the csv file 
+        # checks if the makecsv function has already ran and then sets the tempfile varible - stops repetition as most other functions use the csv file
         cp "${outpath}parsed_nmap.csv" "${outpath}temp.csv"
-        # remove the head from the csv file 
+        # remove the head from the csv file
         sed -i -e "1d" "${outpath}temp.csv"
-        # remove lines that have closed ports 
+        # remove lines that have closed ports
         sed -i '/,closed,/d' "${outpath}temp.csv"
         export tempfile="$(realpath "${outpath}temp.csv")"
 }
@@ -206,11 +206,11 @@ ipport () {
 }
 
 uphosts () {
-        # creates a file with IPs for hosts with Up Statues - needs further checks to be better 
+        # creates a file with IPs for hosts with Up Statues - needs further checks to be better
         echo -e "\e[1m\e[93m[>]\e[0m Parsing up hosts"
-        cat "$inputfilepath" | grep -e 'Status: Up' -e '/open/' |  awk '{ print $2 }' | grep -oE "\b([0-9]{1,3}\.){3}[0-9]{1,3}\b" | sort -u -V  > "$outpath/up.txt" 
+        cat "$inputfilepath" | grep -e 'Status: Up' -e '/open/' |  awk '{ print $2 }' | grep -oE "\b([0-9]{1,3}\.){3}[0-9]{1,3}\b" | sort -u -V  > "$outpath/up.txt"
 
-        # check if there are actually any IP addresses in the file - if not delete it no point 
+        # check if there are actually any IP addresses in the file - if not delete it no point
         if [ -z "$(cat "${outpath}up.txt" | grep -oE "\b([0-9]{1,3}\.){3}[0-9]{1,3}\b")" ]
         then
                 echo -e "$RED - no up hosts $RESETCOL"
@@ -222,10 +222,10 @@ uphosts () {
 }
 
 downhosts () {
-        # creates a file with IPs for hosts with Down status 
+        # creates a file with IPs for hosts with Down status
         echo -e "\e[1m\e[93m[>]\e[0m Parsing down hosts"
         cat "$inputfilepath" | grep -e 'Status: Down' | awk '{ print $2 }' | grep -oE "\b([0-9]{1,3}\.){3}[0-9]{1,3}\b" | sort -u -V > "${outpath}down.txt"
-        # check if there are actually any IP addresses in the file - if not delete it no point 
+        # check if there are actually any IP addresses in the file - if not delete it no point
         if [ -z "$(cat "${outpath}down.txt" | grep -oE "\b([0-9]{1,3}\.){3}[0-9]{1,3}\b")" ]
         then
         echo -e "$RED     - no down hosts $RESETCOL"
@@ -237,7 +237,7 @@ downhosts () {
 
 uniqueports () {
         echo -e "\e[1m\e[93m[>]\e[0m Parsing unique ports"
-        cat "$inputfilepath" | grep -o -P '.{0,9}/open/' | awk '{ print $2}' | cut -d /  -f 1 | sort -u -V | paste -s -d, 2>&1 > "${outpath}unique.txt"; 
+        cat "$inputfilepath" | grep -o -P '.{0,9}/open/' | awk '{ print $2}' | cut -d /  -f 1 | sort -u -V | paste -s -d, 2>&1 > "${outpath}unique.txt";
         if [ -z "$(cat "${outpath}unique.txt" | grep '[0-9]')" ]
         then
                 echo -e "$RED - no Unique ports $RESETCOL"
@@ -277,11 +277,11 @@ udpports () {
 }
 
 smb () {
-        # createa file for URI smb://192.168.1.1 
-        # will only grab out OPEN 445 TCP 
+        # createa file for URI smb://192.168.1.1
+        # will only grab out OPEN 445 TCP
         echo -e "\e[1m\e[93m[>]\e[0m Creating smb paths"
         cat "$inputfilepath" | grep '445/open/tcp/' | awk '{ print $2}' | grep -oE "\b([0-9]{1,3}\.){3}[0-9]{1,3}\b" | sed -e 's/^/smb:\/\//' | sort -u | sort -V | sort -t'/' -k2 -V  > "${outpath}smb.txt"
-        # check for a smb:// if the file has them then likely has ports in  
+        # check for a smb:// if the file has them then likely has ports in
         if [ -z "$(cat "${outpath}smb.txt" | grep 'smb://')" ]
         then
                 echo -e "$RED   - no SMB ports $RESETCOL"
@@ -314,7 +314,7 @@ web () {
                 if [[ "$version" == *"Web"* ]]; then echo "http://${host}:$port/" >> "${outpath}webtemp2"; fi
                 if [[ "$version" == *"web"* ]]; then echo "http://${host}:$port/" >> "${outpath}webtemp2"; fi
         done
-        # if webtemp2 exists then sort it 
+        # if webtemp2 exists then sort it
         if [ -f "${outpath}webtemp2" ]; then
                 sort -u "${outpath}webtemp2" | sort -V | sort -t'/' -k2 -V  > "${outpath}web.txt" 2>&1
                 echo "  - web.txt"
@@ -335,7 +335,7 @@ ssl () {
                 port=$(echo $line | awk -F ',' '{print $2}')
                 service=$(echo $line | awk -F ',' '{print $5}')
                 version=$(echo $line | awk -F ',' '{print $6}')
-                # a little overboard again - just to get anything with ssl or tls in 
+                # a little overboard again - just to get anything with ssl or tls in
                 if [[ "$port" -eq "443" ]]; then echo "${host}:$port" >> "${outpath}ssltemp2"; fi
                 if [[ "$service" == *"ssl"* ]]; then echo "${host}:$port" >> "${outpath}ssltemp2"; fi
                 if [[ "$version" == *"ssl"* ]]; then echo "${host}:$port" >> "${outpath}ssltemp2"; fi
@@ -343,7 +343,7 @@ ssl () {
                 if [[ "$version" == *"tls"* ]]; then echo "${host}:$port" >> "${outpath}ssltemp2"; fi
 
         done
-        # if webtemp2 exists then sort it 
+        # if webtemp2 exists then sort it
         if [ -f "${outpath}ssltemp2" ]; then
                 sort -u "${outpath}ssltemp2" | sort -V > "${outpath}ssl.txt" 2>&1
                 echo "  - ssl.txt"
@@ -363,7 +363,7 @@ ssh () {
                 port=$(echo $line | awk -F ',' '{print $2}')
                 service=$(echo $line | awk -F ',' '{print $5}')
                 version=$(echo $line | awk -F ',' '{print $6}')
-                
+
                 if [[ "$port" -eq "22" ]]; then echo "${host}:${port}" >> "${outpath}sshtemp"; fi
                 if [[ "$service" == *"ssh"* ]]; then echo "${host}:${port}" >> "${outpath}sshtemp"; fi
                 if [[ "$version" == *"ssh"* ]]; then echo "${host}:${port}" >> "${outpath}sshtemp"; fi
@@ -394,11 +394,11 @@ hostports () {
                 if [ "$port" == 445 ]; then
                         service="smb"
                 elif [ "$port" == 161 ]; then
-                        service="snmp"                  
+                        service="snmp"
                 elif [ "$port" == 25 ]; then
-                        service="smtp"  
+                        service="smtp"
                 elif [ "$port" == 21 ]; then
-                        service="ftp"   
+                        service="ftp"
                 elif [ "$port" == 2049 ]; then
                         service="nfs"
                 elif [ "$port" == 22 ]; then
@@ -414,41 +414,41 @@ hostports () {
                 elif [ "$port" == 3389 ]; then
                         service="rdp"
                 elif [ "$port" == 53 ]; then
-                        service="dns"                   
+                        service="dns"
                 elif [ "$port" == 113 ]; then
                         service="ident"
                 elif [ "$port" == 79 ]; then
                         service="finger"
                 elif [ "$port" == 5432 ]; then
-                        service="postgres"      
+                        service="postgres"
                 elif [ "$port" == 3306 ]; then
                         service="mysql"
                 elif [ "$port" == 1433 ]; then
-                        service="mssql"                 
+                        service="mssql"
                 elif [ "$port" == 443 ]; then
                         service="https"
                 elif [ "$port" == 80 ]; then
                         service="http"
                 elif [ "$port" == 636 ]; then
-                        service="ldap"  
+                        service="ldap"
                 elif [ "$proto" == "udp" ] && [ "$port" == 161 ]; then
-                        service="snmp"  
+                        service="snmp"
                 elif [ "$proto" == "udp" ] && [ "$port" == 177 ]; then
-                        service="xdmcp" 
+                        service="xdmcp"
                 elif [ "$service" == "msrpc" ]; then
                         # dont print out msrpc ..pointless - stop the spam
-                        printout="N"    
+                        printout="N"
                 elif [ "$proto" == "udp" ] && [ "$service" == "unknown" ]; then
                         # dont udp + unknown ... cant really do much with this - stop spam
-                        printout="N"            
+                        printout="N"
                 elif [ -z "$service" ]; then
                         # dont udp + unknown ... cant really do much with this - stop spam
-                        printout="N"    
+                        printout="N"
                 fi
                 # print out the IP in port files
                 if [ "$printout" == "Y" ]; then
-                        echo $host >> "$hostportspath"/"$proto"_"$port-$service.txt"            
-                fi      
+                        echo $host >> "$hostportspath"/"$proto"_"$port-$service.txt"
+                fi
         done
         rm  "${hostportspath}/_-.txt" "$tempfile" > /dev/null 2>&1
         echo "  - "${outhostsdir}"/[PROTOCOL]_[PORT]-[SERVICE].txt"
@@ -557,7 +557,7 @@ setup_email_discovery() {
     clear
     echo "Email Discovery Setup"
     echo "====================="
-    
+
     # Setup Hunter.io
     read -p "Do you have a Hunter.io API key? (y/n): " has_hunter_key
     if [[ $has_hunter_key == "y" ]]; then
@@ -565,7 +565,7 @@ setup_email_discovery() {
     else
         echo "Hunter.io functionality will be limited without an API key."
     fi
-    
+
     # Setup EmailHippo (for email verification)
     read -p "Do you have an EmailHippo API key? (y/n): " has_emailhippo_key
     if [[ $has_emailhippo_key == "y" ]]; then
@@ -573,7 +573,7 @@ setup_email_discovery() {
     else
         echo "Email verification will be skipped."
     fi
-    
+
     echo "Email Discovery setup complete."
     read -p "Press Enter to continue"
 }
@@ -581,10 +581,10 @@ setup_email_discovery() {
 employee_info() {
     setup_employee_info
     echo "Gathering Employee Information..."
-    
+
     echo "Running CrossLinked for company: $CROSSLINKED_COMPANY"
     # Implement CrossLinked call here
-    
+
     read -p "Press Enter to return to OSINT menu"
     osint_menu
 }
@@ -592,21 +592,21 @@ employee_info() {
 setup_theharvester() {
     echo "theHarvester Setup"
     echo "=================="
-    
+
     read -p "Enter search limit (default 500): " THEHARVESTER_LIMIT
     THEHARVESTER_LIMIT=${THEHARVESTER_LIMIT:-500}
-    
+
     echo "Select data sources (space-separated):"
     echo "1. LinkedIn  2. Google  3. Bing  4. Yahoo  5. DuckDuckGo  6. All"
     read -p "Enter your choices: " THEHARVESTER_SOURCES_CHOICE
-    
+
     # Convert choices to actual source names
     # This is a simplified example and would need to be expanded
     case $THEHARVESTER_SOURCES_CHOICE in
         *6*) THEHARVESTER_SOURCES="all" ;;
         *) THEHARVESTER_SOURCES=$(echo $THEHARVESTER_SOURCES_CHOICE | sed 's/1/linkedin/g; s/2/google/g; s/3/bing/g; s/4/yahoo/g; s/5/duckduckgo/g') ;;
     esac
-    
+
     echo "theHarvester setup complete."
     read -p "Press Enter to continue"
 }
@@ -651,21 +651,21 @@ dehashQuery () {
 
 phased_scan() {
     echo -e "${GREEN}Commencing phased scanning...${RC}"
-    
+
     #Initial connect scan
     echo -e "${GREEN}Phase 1: Initial connect scan...${RC}"
     nmap -sn -oG connect_scan.gnmap -iL scope
     grep "Status: Up" connect_scan.gnmap | cut -d ' ' -f 2 > live_hosts.txt
-    
+
     #Port scan on live hosts
     echo -e "${GREEN}Phase 2: Port scan on live hosts...${RC}"
     nmap -sS -sU -p T:1-65535,U:1-1000 --open -oG port_scan.gnmap -iL live_hosts.txt
-    
+
     # Extract open ports
     grep "/open/" port_scan.gnmap | cut -d ' ' -f 4- | tr ',' '\n' | cut -d '/' -f 1 | sort -nu > open_ports.txt
     # Leading spaces are removed
     sed -i 's/^[[:space:]]*//' open_ports.txt
-    
+
     #Targeted script scan
     echo -e "${GREEN}Phase 3: Targeted script scan...${RC}"
     ports=$(tr '\n' ',' < open_ports.txt | sed 's/,$//')
@@ -713,7 +713,7 @@ network_scanning() {
         # Parse generated Shodan File
         shodan parse --fields ip_str,port --separator , shodanoutput.json.gz > shodanHosts.csv
 
-        # Parse Output into scope files for utils. 
+        # Parse Output into scope files for utils.
         echo -e "${GREEN}Parsing scan results... ${RC}"
         nmapparse
 
@@ -730,7 +730,7 @@ network_scanning() {
 
         # ssh-audit against all ssh targets
         echo -e "${GREEN}Testing SSH... ${RC}"
-        ssh-audit --targets=ssh.txt -v 
+        ssh-audit --targets=ssh.txt -v
 }
 
 combined_workflow() {
@@ -756,14 +756,6 @@ combined_workflow() {
 # ==================== EXECUTION ====================
 # Everything past here is the execution of the script
 # ===================================================
-
-# Get some variables in there
-DO_SCAN=false
-DO_DEHASHED=false
-DOMAIN=""
-HUNTER_API_KEY=""
-CROSSLINKED_COMPANY=""
-EMAILHIPPO_API_KEY=""
 
 check_dependencies
 main_menu
