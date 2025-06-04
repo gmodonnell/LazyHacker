@@ -82,9 +82,13 @@ def osint():
 def apis():
     domain = input(f"{datetime.now()} Type domain: ")
     osintcalls.darkowlQuery(domain)
+    osintcalls.dehashedV2Query(domain)
     pass
 
 def audits():
+    domain = input(f"{datetime.now()} Type domain: ")
+    auditcalls.resolveDMARC(domain)
+    auditcalls.findDKIMRecord(domain)
     pass
 
 if __name__ == "__main__":
