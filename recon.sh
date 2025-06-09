@@ -669,7 +669,7 @@ phased_scan() {
     #Targeted script scan
     echo -e "${GREEN}Phase 3: Targeted script scan...${RC}"
     ports=$(tr '\n' ',' < open_ports.txt | sed 's/,$//')
-    nmap -sV -sC -p $ports -oA nmap_scan -iL live_hosts.txt
+    nmap -sV -sC -sU -p $ports -oA nmap_scan -iL live_hosts.txt
 }
 
 email_discovery() {
