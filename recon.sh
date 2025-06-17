@@ -654,7 +654,7 @@ phased_scan() {
 
     #Initial connect scan
     echo -e "${GREEN}Phase 1: Initial connect scan...${RC}"
-    nmap -sn -oG connect_scan.gnmap -iL scope
+    nmap -sn -oG connect_scan.gnmap -iL scope --excludefile exclude
     grep "Status: Up" connect_scan.gnmap | cut -d ' ' -f 2 > live_hosts.txt
 
     #Port scan on live hosts
@@ -669,7 +669,7 @@ phased_scan() {
     #Targeted script scan
     echo -e "${GREEN}Phase 3: Targeted script scan...${RC}"
     ports=$(tr '\n' ',' < open_ports.txt | sed 's/,$//')
-    nmap -sV -sC -sU -p $ports -oA nmap_scan -iL live_hosts.txt
+    nmap -sS -sU -sV -sC -p $ports -oA nmap_scan -iL live_hosts.txt
 }
 
 email_discovery() {
