@@ -1,4 +1,4 @@
-f#!/usr/bin/env bash
+#!/usr/bin/env bash
 # Recon Automation for Internal/External Network Penetration Tests
 
 # Drip Comes First...

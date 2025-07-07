@@ -8,6 +8,7 @@ from datetime import datetime
 from colorama import Fore, Style
 import osintcalls
 import auditcalls
+import scanningutils
 
 # Logo Function because ASCII is 1337
 def logo():
@@ -73,6 +74,7 @@ def slamit():
     pass
 
 def scanning():
+    scanningutils.phasedScan()
     pass
 
 def osint():
