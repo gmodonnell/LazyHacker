@@ -51,6 +51,7 @@ def menu():
     print("3. Ask the Locals (OSINT)")
     print("4. Spend Money (API Services)")
     print("5. Assess the Situation (Automated Auditing)")
+    print("6. Objective-Based Options")
     choice = input("What Now? (Int): ")
     match choice:
         case "1":
@@ -63,9 +64,25 @@ def menu():
             apis()
         case "5":
             audits()
+        case "6":
+            submenu()
         case _:
             print("Menu input accepts integers 1-5 only...")
 
+def submenu():
+    print("=" * 70)
+    print("1. Parse an NMap Scan")
+    print("2. Run Vuln Scan Tooling")
+    choice = input("What Now? (Int): ")
+    match choice:
+        case "1":
+            parserobj = scanningutils.NmapParser()
+            parserobj.nmapParse()
+        case "2":
+            scanningutils.auditSSH()
+            scanningutils.auditSSL()
+        case _:
+            print("Menu input accepts integers only...")
 
 def slamit():
     # Will need to be optimized for the most efficient
@@ -74,7 +91,7 @@ def slamit():
     pass
 
 def scanning():
-    scanningutils.phasedScan()
+    scanningutils.auditScan()
     pass
 
 def osint():
