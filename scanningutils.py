@@ -26,8 +26,9 @@ def phasedScan():
 
     print(f"{Fore.YELLOW}Phase 3: Targeted Script Scan...{Fore.RESET}")
     #Targeted Script Scan
-    os.system("ports=$(tr '\n' ',' < open_ports.txt | sed 's/,$//')")
-    os.system('nmap -sS -sU -sV -sC -p T:$ports,U:$ports -oA nmap_scan -iL live_hosts.txt')
+    with open('open_ports.txt', 'r') as f:
+        ports = ','.join(line.strip() for line in f if line.strip())
+    os.system(f'nmap -sS -sU -sV -sC -p T:{[ports]},U:{ports} -oA nmap_scan -iL live_hosts.txt')
 
 def auditSSL():
     try:
