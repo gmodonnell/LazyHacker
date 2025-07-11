@@ -137,7 +137,7 @@ class NmapParser:
             status = match.group(2)
             protocol = match.group(3)
             service = match.group(4) or ""
-            version = match.gropu(5) or ""
+            version = match.group(5) or ""
             ports.append(PortInfo(host, portnum, status, protocol, service, version))
         return ports
 
@@ -166,7 +166,7 @@ class NmapParser:
 
         temp_files = ["temp.csv", "webtemp2", "sshtemp", "ssltemp2", "reportemp"]
         for temp_file in temp_files:
-            (self.output_dir / temp_file).unlink(missing_ok=True)
+            (self.outdir / temp_file).unlink(missing_ok=True)
 
     def makecsv(self):
         # Creates CSV File
@@ -242,7 +242,7 @@ class NmapParser:
                 if ipmatch:
                     host = ipmatch.group(1)
                     if 'Status: Up' in line or '/open/' in line:
-                        upHosts.app(host)
+                        upHosts.add(host)
                     elif 'Status: Down' in line:
                         downHosts.add(host)
         self.writetxt("up.txt", upHosts, "up hosts")
@@ -320,7 +320,7 @@ class NmapParser:
         self.portFiles()
         self.serviceFiles()
 
-        print(f"{Fore.GREEN}[>] Parsing Complete! Results in '{self.outdir}'")
+        print(f"{Fore.GREEN}[>] Parsing Complete! Results in '{self.outdir}'{Fore.RESET}")
 
 def appendixGen():
     nmap_data = []
