@@ -187,28 +187,47 @@ class NmapParser:
         return [p for p in self._portdata if p.status == 'open']
 
     def summary(self):
-        # Create Summary File
+        """Create Summary File - reads from CSV like bash version"""
         print(f"{Fore.YELLOW}[>] Creating Summary{Fore.RESET}")
-
-        open_ports = self._getopenports()
-
-        with open(self.outdir / "summary.txt", 'w') as f:
+        
+        # Ensure CSV exists
+        if not self.csvfile.exists():
+            print(f"{Fore.RED}Error: {self.csvfile} not found. Run makecsv() first.{Fore.RESET}")
+            return
+        
+        with open(self.csvfile, 'r') as csvf, open(self.outdir / "summary.txt", 'w') as f:
+            reader = csv.reader(csvf)
+            next(reader)  # Skip header row
+            
             f.write("+=========================================================================================+\n")
             f.write(f"{'| HOST':<18} {'| PORT / PROTOCOL':<16} {' | SERVICE':<52} {'|':<2}\n")
-
+            
             last_host = ""
-            for port_info in open_ports:
-                if port_info.host != last_host:
+            for row in reader:
+                if len(row) < 6:
+                    continue
+                    
+                host = row[0]
+                port = row[1] 
+                protocol = row[3]
+                service = row[4]
+                version = row[5]
+                
+                # Only process open ports
+                if row[2] != 'open':
+                    continue
+                    
+                if host != last_host:
                     f.write("+=========================================================================================+\n")
-
-                version_str = f"- {port_info.version}" if port_info.version else ""
-                service_ver = f"{port_info.service} {version_str}"
-
-                f.write(f"| {port_info.host:<17} | {port_info.port} / {port_info.protocol:<11} | {service_ver:<50} |\n")
-                last_host = port_info.host
-
+                
+                version_str = f"- {version}" if version else ""
+                service_ver = f"{service} {version_str}"
+                
+                f.write(f"| {host:<17} | {port} / {protocol:<11} | {service_ver:<50} |\n")
+                last_host = host
+                
             f.write("+=========================================================================================+\n")
-
+        
         print(f"{Fore.GREEN}    - summary.txt{Fore.RESET}")
 
     def writetxt(self, filename: str, data: Set[str], description: str):
