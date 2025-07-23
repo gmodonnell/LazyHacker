@@ -106,7 +106,7 @@ class NmapParser:
 
         # Precomipling the Regex
         self.ippattern = re.compile(r'\b(\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})\b')
-        self.portpattern = re.compile(r'(\d+)/(open|closed)/(\w+)(?://[^/]*)?(?://[^/]*)?(?://([^/]*))?(?://[^/]*)?(?://([^/]*))?')
+        self.portpattern = re.compile(r'(\d+)/(open|closed)/(\w+)//([^/]*)/([^/]*)/([^/]*)')
 
         # Colors and Port Service Mappings Omitted
 
@@ -136,8 +136,9 @@ class NmapParser:
             portnum = int(match.group(1))
             status = match.group(2)
             protocol = match.group(3)
-            service = match.group(4) or ""
-            version = match.group(5) or ""
+            owner = match.group(4) or ""
+            service = match.group(5) or ""
+            version = match.group(6) or ""
             ports.append(PortInfo(host, portnum, status, protocol, service, version))
         return ports
 
@@ -370,7 +371,7 @@ def main():
 
     try:
         parser_obj = NmapParser(args.input, args.output)
-        parser_obj.nmapparse()
+        parser_obj.nmapParse()
         return 0
     except Exception as e:
         print(f"Error: {e}")
