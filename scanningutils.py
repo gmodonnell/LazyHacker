@@ -9,6 +9,7 @@ from colorama import Fore, Style
 import subprocess
 from parseutils import NmapParser, appendixGen
 
+# Progressively scans scoped endpoints
 def phasedScan():
     print(f"{Fore.GREEN}Commencing Phased Scanning...{Fore.RESET}")
     print(f"{Fore.YELLOW}Phase 1: Initial Connect Scan...{Fore.RESET}")
@@ -30,6 +31,7 @@ def phasedScan():
         ports = ','.join(line.strip() for line in f if line.strip())
     os.system(f'nmap -sS -sU -sV -sC -p T:{[ports]},U:{ports} -oA nmap_scan -iL live_hosts.txt')
 
+# Runs sslscan against ssl targets
 def auditSSL():
     try:
         if not os.path.exists('ssl.txt'):
@@ -49,7 +51,7 @@ def auditSSL():
     except Exception as e:
         print(f"Error running sslscan: {e}")
 
-
+# Runs ssh-audit against ssh targets
 def auditSSH():
     try:
         if not os.path.exists('ssh.txt'):
@@ -69,7 +71,8 @@ def auditSSH():
     except Exception as e:
         print(f"Error running ssh-audit: {e}")
 
-
+# Combination function of everything
+# Enables oneshotting the whole joint
 def auditScan():
     if not os.path.exists('scope'):
         print(f"{Fore.RED}ERROR: scopefile not found... ABORTING{Fore.RESET}")

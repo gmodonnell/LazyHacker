@@ -104,6 +104,10 @@ def dehashedV2Query(domain):
     dedupe_csv('dehashedResults.csv', 'dehashedDeduped.csv')
     print(f"Results saved to dehashedDeduped.csv")
 
+# Queries DarkOwl V1 API for historic data
+# related to domain.
+# INPUT: Domain (str)
+# OUTPUT: Shitload of JSON
 def darkowlQuery(domain):
     print(f"Querying DarkOwl for Records Associated with {domain}")
     privkey = getpass("Input DarkOwl Private Key: ")
@@ -134,7 +138,7 @@ def apiBalanceCheck(privkey, pubkey):
             print(f"Error Checking Usage: Status Code {response.status_code}")
             print(response.content)
             return None
-        usage = response.data
+        usage = response.json()
         return usage
     except requests.exceptions.RequestException as e:
         print(f"Error Connecting to Usage API: {e}")
@@ -151,6 +155,11 @@ def makeDarkOwlHeaders(path, privkey, pubkey):
     auth = f'OWL {pubkey}:{b64encoded}'
     return {
         'Authorization': auth,
-        'Date': date,
+        'X-VISION-DATE': date,
         'Accept': 'application/json'
     }
+
+# TODO: Write this function
+# Maybe put it in parseutils?
+def parseDarkOwl():
+    pass

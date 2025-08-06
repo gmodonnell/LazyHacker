@@ -84,30 +84,39 @@ def submenu():
         case _:
             print("Menu input accepts integers only...")
 
-def slamit():
-    # Will need to be optimized for the most efficient
-    # Order of task execution so things don't sit on
-    # pause all day because I forgot to put in an API key.
-    pass
-
+# DONE afaik
 def scanning():
     scanningutils.auditScan()
     pass
 
+# TODO: Loop in linkedin2username for this mf thang
 def osint():
-    domain = input(f"{datetime.now()} Type domain: ")
+    # domain var potentially useless if only username scraping
+    # li2u requires the linkedin url formatted name
+    #domain = input(f"{datetime.now()} Type domain: ")
     pass
 
+# TODO: Implement DarkOwl Parsing.
 def apis():
     domain = input(f"{datetime.now()} Type domain: ")
     osintcalls.darkowlQuery(domain)
     osintcalls.dehashedV2Query(domain)
     pass
 
+# PASSable afaik
 def audits():
     domain = input(f"{datetime.now()} Type domain: ")
     auditcalls.resolveDMARC(domain)
     auditcalls.findDKIMRecord(domain)
+    pass
+
+def slamit():
+    # Will need to be optimized for the most efficient
+    # Order of task execution so things don't sit on
+    # pause all day because I forgot to put in an API key.
+    apis()
+    scanning()
+    audits()
     pass
 
 if __name__ == "__main__":
