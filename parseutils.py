@@ -22,6 +22,50 @@ from concurrent.futures import ThreadPoolExecutor
 import functools
 from colorama import Fore, Style
 
+# Functions that parse CLI tool output into CSV
+class auditParse:
+    """
+    parseSSHScan takes input from a no color ssh-audit stdout
+    and returns a csv of all endpoints and their associated failures.
+    """
+    def parseSSHScan(infile):
+        # Opening input, creating outfile
+        with open(infile, 'r', encoding='utf-8') as infile, \
+            open('sshaudit.csv', 'w', encoding='utf-8') as csvfile:
+            # Inst csv writer
+            csv_writer = csv.writer(csvfile)
+            for line in infile:
+                # Might not be necessary
+                line =  line.strip()
+                # skip empty lines (there are a few in ssh-audit output)
+                if not line:
+                    continue
+                # Identify 'gen'eral information lines
+                if 'gen' in line:
+                    # Writes the general info into a csv
+                    if ':' in line:
+                        geninfo = line.split(':', 1)[1].strip()
+                        csv_writer.writerow([geninfo])
+                # Identifying 'fail'ure to adhere to best practices
+                elif 'fail' in line:
+                    if '[fail]' in line:
+                        # Pulling the '(typ) algo' and failure reason
+                        # as 2 parts to write to csv
+                        parts = line.split('[fail]', 1)
+                        part1 = f"{parts[0].strip()}"
+                        part2 = f"{parts[1].strip()}"
+                        csv_writer.writerow([part1, part2])
+                    else:
+                        # Writes a fail row if it exists but doesn't match
+                        csv_writer.writerow(f"{line}")
+
+    """
+    parseSSLScan takes input from the XML out of sslscan
+    and returns a csv of all endpoints and their associated failures.
+    """
+    def parseSSLScan(infile):
+        pass
+
 def dedupe_csv(infile, outfile):
     # Read all entries
     seen = set()
