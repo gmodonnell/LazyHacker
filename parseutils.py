@@ -28,10 +28,13 @@ class auditParse:
     parseSSHScan takes input from a no color ssh-audit stdout
     and returns a csv of all endpoints and their associated failures.
     """
+    #TODO: Make the CSV 3 columns instead of 2.
+    #      The third column will contain the IP address
+    #      which corresponds to the endpoint.
     def parseSSHScan(infile):
         # Opening input, creating outfile
         with open(infile, 'r', encoding='utf-8') as infile, \
-            open('sshaudit.csv', 'w', encoding='utf-8') as csvfile:
+            open('sshaudit.csv', 'w', encoding='utf-8', newline='') as csvfile:
             # Inst csv writer
             csv_writer = csv.writer(csvfile)
             for line in infile:
@@ -42,8 +45,8 @@ class auditParse:
                     continue
                 # Identify 'gen'eral information lines
                 if 'gen' in line:
-                    # Writes the general info into a csv
-                    if ':' in line:
+                    # Writes the IP address to csv
+                    if re.search(r'\b(?:[0-9]{1,3}\.){3}[0-9]{1,3}\b', line):
                         geninfo = line.split(':', 1)[1].strip()
                         csv_writer.writerow([geninfo])
                 # Identifying 'fail'ure to adhere to best practices
@@ -52,7 +55,7 @@ class auditParse:
                         # Pulling the '(typ) algo' and failure reason
                         # as 2 parts to write to csv
                         parts = line.split('[fail]', 1)
-                        part1 = f"{parts[0].strip()}"
+                        part1 = f"{parts[0].strip()[:-2]}"
                         part2 = f"{parts[1].strip()}"
                         csv_writer.writerow([part1, part2])
                     else:

@@ -60,6 +60,8 @@ class Menus:
                 slamit()
             case "2":
                 scanning()
+                #TODO: Move parsing func and change menu flow 
+                parsing()
             case "3":
                 osint()
             case "4":

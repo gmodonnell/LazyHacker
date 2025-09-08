@@ -163,3 +163,13 @@ def makeDarkOwlHeaders(path, privkey, pubkey):
 # Maybe put it in parseutils?
 def parseDarkOwl():
     pass
+
+# Wappalyzer -> NVD Call
+class webScanner:
+    # Subjects a list of urls to wappalyzer
+    # In: List of urls (1 per line)
+    # Out: csv of webapp, component, component, etc
+    def wappalyze(list):
+        pass
+
+    # Calls the NVD Database

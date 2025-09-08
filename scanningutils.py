@@ -59,8 +59,9 @@ def auditSSH():
         if not os.path.exists('ssh.txt'):
             print(f"{Fore.RED}WARNING: ssl.txt not found, skipping SSH AUDIT{Fore.RESET}")
             return
-        cmd = ['ssh-audit', '--targets=ssh.txt', '-v']
-        result = subprocess.run(cmd, capture_output=True, text=True)
+        cmd = ['ssh-audit', '--targets=ssh.txt', '-v', '--no-color']
+        with open('sshout', 'w') as f:
+            result = subprocess.run(cmd, stdout=f, text=True)
         if result.returncode == 0:
             print("SSH Audit Completed Successfully")
             print(result.stdout)
@@ -72,6 +73,7 @@ def auditSSH():
         print("Error: ssh-audit command not found. Please install ssh-audit")
     except Exception as e:
         print(f"Error running ssh-audit: {e}")
+
 
 # Combination function of everything
 # Enables oneshotting the whole joint
