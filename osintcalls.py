@@ -165,6 +165,7 @@ def parseDarkOwl():
     pass
 
 # Wappalyzer -> NVD Call
+# TODO: find wappalyzer replacement because it's going paid
 class webScanner:
     # Subjects a list of urls to wappalyzer
     # In: List of urls (1 per line)

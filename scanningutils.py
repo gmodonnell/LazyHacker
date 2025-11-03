@@ -23,6 +23,7 @@ def phasedScan():
     # Port Scan
     os.system("nmap -sS -sU -p T:1-65535,U:1-1000 --open -oG port_scan.gnmap -iL live_hosts.txt")
     # Extract Open Ports
+    # TODO: CONTINUE REFACTOR HERE
     os.system('grep "/open/" port_scan.gnmap | cut -d " " -f 4- | tr "," "\n" | cut -d "/" -f 1 | sort -nu > open_ports.txt')
     # Remove Leading Spaces
     os.system("sed -i 's/^[[:space:]]*//' open_ports.txt")
@@ -57,9 +58,9 @@ def auditSSL():
 def auditSSH():
     try:
         if not os.path.exists('ssh.txt'):
-            print(f"{Fore.RED}WARNING: ssl.txt not found, skipping SSH AUDIT{Fore.RESET}")
+            print(f"{Fore.RED}WARNING: ssh.txt not found, skipping SSH AUDIT{Fore.RESET}")
             return
-        cmd = ['ssh-audit', '--targets=ssh.txt', '-v', '--no-color']
+        cmd = ['ssh-audit', '--targets=ssh.txt', '-v', '--no-colors']
         with open('sshout', 'w') as f:
             result = subprocess.run(cmd, stdout=f, text=True)
         if result.returncode == 0:

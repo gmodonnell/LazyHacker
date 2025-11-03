@@ -1,0 +1,20 @@
+{
+  "tools": [
+    {"engagement": "a", "pacman": "apt", "name": "pipx","download": "pipx", "env_required": false},
+    {"engagement": "a", "pacman": "apt", "name": "snmp","download": "snmp", "env_required": false},
+    {"engagement": "a", "pacman": "apt", "name": "git","download": "git", "env_required": false},
+    {"engagement": "a", "pacman": "apt", "name": "sslscan","download": "sslscan", "env_required": false},
+    {"engagement": "a", "pacman": "apt", "name": "ssh-audit","download": "ssh-audit", "env_required": false},
+    {"engagement": "a", "pacman": "apt", "name": "ike-scan","download": "ike-scan", "env_required": false},
+    {"engagement":"a","pacman":"apt","name":"nslookup","download":"dnsutils","env_required":false},
+    {"engagement": "i", "pacman": "pipx", "name": "netexec","download": "git+https://github.com/PennyW0rth/NetExec", "env_required": false},
+    {"engagement": "a", "pacman": "pipx", "name": "ntlmrelayx.py","download": "impacket", "env_required": false},
+    {"engagement": "i", "pacman": "git", "name": "Responder","download": "https://github.com/lgandx/Responder", "env_required": true},
+    {"engagement": "a", "pacman": "git", "name": "EyeWitness","download": "https://github.com/RedSiege/EyeWitness", "env_required": true},
+    {"engagement": "a", "pacman": "git", "name": "snmpv3brute","download": "https://github.com/applied-risk/snmpv3brute", "env_required": true},
+    {"engagement": "a", "pacman": "git", "name": "seclists","download": "https://github.com/danielmiessler/seclists", "env_required": false},
+    {"engagement": "i", "pacman": "git", "name": "kerbrute", "download": "https://github.com/ropnop/kerbrute", "env_required": false},
+    {"engagement": "a", "pacman": "git", "name": "snmpwn", "download": "https://github.com/hatlord/snmpwn", "env_required": false},
+    {"engagement":"a","pacman":"git","name":"linkedin2username","download":"https://github.com/initstring/linkedin2username","env_required":true}
+  ]
+}
