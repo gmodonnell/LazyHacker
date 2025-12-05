@@ -264,8 +264,7 @@ class nameScraper:
     # Run li2u
     # try to match darkowl/dehashed format to 
     # recovered names to generate more comprehensive name list.
-    # TODO: figure out how this is going to be handled since it
-    #       requires GUI/X11.
+    # TODO: Implement SSH forwarding so you can get a GUI login.
     pass
 
 # Cute menu to tie this all together.

@@ -24,7 +24,7 @@ class Scanning:
     # TODO: Determine if -sn (ICMP) is the best way to do this
     #       as endpoints have been missed before.
     def connectScan(scope, exclude, outfile):
-        cmd = ['nmap','-sn','-oG',outfile,'-iL',scope,'--excludefile',exclude, '--max-retries', 1, '--max-rtt-timeout',800]
+        cmd = ['nmap','-sn','-oG',outfile,'-iL',scope,'--excludefile',exclude, '--max-retries', '1', '--max-rtt-timeout', '800']
         try:
             result = subprocess.run(cmd, check=True, capture_output=True, text=True)
             return True, result.stdout
