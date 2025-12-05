@@ -1,0 +1,44 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "lazyhacker"
+version = "0.1.0"
+description = "Suite of tools to automate the boring parts of pentesting"
+readme = "README.md"
+requires-python = ">=3.10"
+license = {file = "LICENSE"}
+authors = [
+    {name = "LazyHacker Developer"}
+]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Information Technology",
+    "Topic :: Security",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+]
+dependencies = [
+    "requests>=2.32.0",
+    "dnspython>=2.0.0",
+    "colorama>=0.4.6",
+    "pandas>=2.0.0",
+]
+
+[project.scripts]
+lazyhacker = "lazyhacker.__main__:main"
+pentestisland = "lazyhacker.__main__:main"
+
+[project.urls]
+Homepage = "https://github.com/yourusername/LazyHacker"
+Issues = "https://github.com/yourusername/LazyHacker/issues"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.package-data]
+lazyhacker = ["setup/toolsList.json"]

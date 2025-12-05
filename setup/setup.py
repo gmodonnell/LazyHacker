@@ -131,7 +131,6 @@ class GenSetup:
                 return 2
             case "r"|"R":
                 return 3
-                pass
             case "q"|"Q":
                 sys.exit()
             case _:

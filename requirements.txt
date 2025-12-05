@@ -1,6 +1,6 @@
 requests
 dnspython
 colorama
-apt
+python-apt
 dnspython
 pandas
