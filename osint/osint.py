@@ -12,6 +12,7 @@ from parsing.clerk import dedupe_csv
 import dns.resolver
 import hmac
 import hashlib
+import subprocess
 import base64
 from datetime import datetime, timedelta
 import parsing.clerk as clerk
@@ -198,19 +199,91 @@ class DNSAudit:
         else:
             return spf
 
+    # Checks for a DKIM record given a domain and selector
+    # IN: Domain Name (str), selector (str)
+    # OUT: DKIM record string or None if not found
+    def checkDKIMSelector(domain, selector):
+        try:
+            fqdn = f"{selector}._domainkey.{domain}"
+            dkim = dns.resolver.resolve(fqdn, "TXT")
+            for rdata in dkim:
+                return ''.join(str(txt) for txt in rdata.strings)
+        except (dns.resolver.NXDOMAIN, dns.resolver.NoAnswer, dns.exception.DNSException):
+            return None
+
+    # Attempts to find a DKIM record using checkDKIMSelector and common selectors
+    # IN: Domain Name (str)
+    # OUT: Prints found DKIM records, returns bool indicating if any were found
+    def findDKIMRecord(domain):
+        selectors = ["default", "google", "k1", "k2", "selector1", "selector2", "dkim", "mail",
+            "email", "smtp", "20161025", "20150623", "mandrill",
+            "key1", "key2", "everlytic", "s1", "s2", "mxvault", "dk", "20230503",
+            "20230224", "20220803", "sendgrid", "sig1", "litesrv", "ctct1", "ctct2", "zendesk1",
+            "zendesk2", "mxvault", "spop1024", 'dk', 'a1', 'aweber_key_a', 'aweber_key_b', 'aweber_key_c',
+            "cm", "clab1", "dkim1024", "e2ma-k1", "e2ma-k2", "e2ma-k3", "sable", "hs1", "hs2",
+            "kl", "kl2", "mailjet", "mailpoet1", "mailpoet2", "m101", "m102", "ecm1", "nce2048",
+            "smtp"]
+
+        print(f"{Fore.YELLOW}Attempting to find DKIM record for {domain} with {len(selectors)} selectors...{Fore.RESET}")
+
+        # Bool for DKIM existence
+        found = False
+
+        for selector in selectors:
+            result = DNSAudit.checkDKIMSelector(domain, selector)
+
+            if result:
+                print(f"{Fore.GREEN}✓ DKIM record found for {selector}._domainkey.{domain}{Fore.RESET}")
+                print(f"Record: {result}")
+                print("=" * 70)
+                found = True
+
+        if not found:
+            print(f"{Fore.RED}No DKIM records found for {domain} with any of the common selectors{Fore.RESET}")
+
+        return found
+
+# Checks for Similar URLs and then turns them into a CSV
+# for reporting
+class URLAudit:
+    # Uses the urlcrazy tool to do this
+    def callURLCrazy(domain):
+        cmd = ['urlcrazy','-n','-f','csv','-o','urlcrazy.csv',domain]
+        try:
+            result = subprocess.run(cmd, check=True, capture_output=True, text=True)
+            clerk.urlcsv("urlcrazy.csv")
+            return True, result.stdout
+        except subprocess.CalledProcessError as e:
+            return False, e.stderr
+        except FileNotFoundError:
+            return False, "urlcrazy not found"
+        
 
 # This is going to automate all username scraping.
 class nameScraper:
+    # Run li2u
+    # try to match darkowl/dehashed format to 
+    # recovered names to generate more comprehensive name list.
+    # TODO: figure out how this is going to be handled since it
+    #       requires GUI/X11.
     pass
 
 # Cute menu to tie this all together.
 def flow():
+    # Hardcoded names for cred pull files.
+    dehashedfile = 'dehashed.csv'
+    darkowlfile =  'darkowl.csv'
     domain = input("Type the target domain: ")
-    print(f"Targeting Domain: {domain}")
+    print(f"{Fore.YELLOW}Targeting Domain: {Fore.RESET}{domain}")
+    print(f"{Fore.GREEN}Starting li2u...{Fore.RESET}")
     # TODO: Fix darkowlpull
     # OsintApi.darkowlpull(domain)
     # OsintApi.dehashedV2Query(domain)
-    # handle merger via clerk funcs.
+    # Concat username file and generate cred report
+    clerk.credconcat(dehashedfile, darkowlfile)
+    clerk.credprep(dehashedfile, darkowlfile)
+    # Audit DNS and URL Permutations
     DNSAudit.dmarcPull(domain)
     DNSAudit.spfPull(domain)
+    URLAudit.callURLCrazy(domain)
     pass

@@ -71,7 +71,7 @@ class IntSetup:
     # OUT: array of tools to be checked for
     def getIntTools():
         config = GenSetup.getToolsConfig()
-        return [tool for tool in config['tools'] if tool['engagement'] == 'i' or 'a']
+        return [tool for tool in config['tools'] if tool['engagement'] == 'i' or tool['engagement'] == 'a']
 
 class ExtSetup:
     # External Setup Function. Triggered by Menu
@@ -108,7 +108,7 @@ class ExtSetup:
     # OUT: array of tools to be checked/installed
     def getExtTools():
         config = GenSetup.getToolsConfig()
-        return [tool for tool in config['tools'] if tool['engagement'] == 'e' or 'a']
+        return [tool for tool in config['tools'] if tool['engagement'] == 'e' or tool['engagement'] == 'a']
 
 class GenSetup:
     # Main Menu Display
