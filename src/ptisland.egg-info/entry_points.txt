@@ -1,0 +1,3 @@
+[console_scripts]
+pentestisland = ptisland.__main__:main
+ptisland = ptisland.__main__:main

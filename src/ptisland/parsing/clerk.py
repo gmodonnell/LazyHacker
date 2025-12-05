@@ -13,7 +13,7 @@ import csv
 from colorama import Fore
 import pandas as pd
 import json
-from art.art import clerk
+from ptisland.art.art import clerk
 
 # Handles all funcs for parsing nmap output.
 # Various formats are handled, as well as

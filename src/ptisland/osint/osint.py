@@ -8,14 +8,13 @@ import getpass
 from colorama import Fore, Style
 import requests
 import json
-from parsing.clerk import dedupe_csv
 import dns.resolver
 import hmac
 import hashlib
 import subprocess
 import base64
 from datetime import datetime, timedelta
-import parsing.clerk as clerk
+import ptisland.parsing.clerk as clerk
 
 # OsintApi Class handles all the calls related to
 # DarkOwl, Dehashed and other OSINT API Services
@@ -160,7 +159,7 @@ class OsintApi:
             writer.writerows(valid_entries)
 
         # Sort and remove duplicates
-        dedupe_csv('dehashedResults.csv', 'dehashedDeduped.csv')
+        clerk.dedupe_csv('dehashedResults.csv', 'dehashedDeduped.csv')
         print(f"Results saved to dehashedDeduped.csv")
 
 # DNSAudit Class examines the DNS, pulls down MX records

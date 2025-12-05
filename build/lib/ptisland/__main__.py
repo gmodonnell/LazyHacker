@@ -1,0 +1,102 @@
+from colorama import Fore, Style
+import sys
+
+def logo():
+    Y = Fore.YELLOW
+    W = Fore.WHITE
+    B = Fore.BLUE
+    RED = Fore.RED
+    U = Fore.CYAN
+    G = Fore.GREEN
+    RC = Style.RESET_ALL
+    print(f'''
+                          {G},--.\`-. __
+                         _,.`. \:/,"  `-._
+                     ,-*" _,.-;-*`-.+"*._ )
+                    ( ,."* ,-" {Y}/ {G}`.  \.  `.
+                   ,"   ,;"  ,"{Y}\../{G}\  \:   \\
+                  (   ,"/   /{Y} \.,'{G} :   ))  /
+                   \  |/   /{Y} \.,'{G}  /  // ,'
+                    \_)\ ,'{Y} \.,'{G}  (  / )/
+                        ` {Y} \._,'{G}   `"{Y}
+                           {Y}\../
+                           {Y}\../{U}
+                 ~        ~{Y}\../{U}           ~~
+          ~~          ~~   {Y}\../   {U}~~   ~      ~~
+     ~~    ~   ~~{W}  __...---{Y}\../{W}-...__ {U}~~~     ~~
+       ~~~~  ~{W}_,--'        {Y}\../{RED} _  {W}  `--.__ {U}~~    ~~
+   ~~~{W}  __,--'              {Y}`" {RED}  \ \/ {W}     `--.__ {U}  ~~~
+~~{W}  ,--'                          {RED}`/\       {W}     `--.
+   '------......______             ______......------`{U} ~~
+ ~~~   ~    ~~      ~{W} `````---""""" {U} ~~   ~     ~~
+        ~~~~    ~~  ~~~~       ~~~~~~  ~ ~~   ~~ ~~~  ~
+     ~~   ~   ~~~     ~~~ ~         ~~       ~~  {RED} SSt{U}
+              ~        ~~       ~~~       ~{RC}
+    ____             __            __     ____     __                __
+   / __ \___  ____  / /____  _____/ /_   /  _/____/ /___ _____  ____/ /
+  / /_/ / _ \/ __ \/ __/ _ \/ ___/ __/   / // ___/ / __ `/ __ \/ __  / 
+ / ____/  __/ / / / /_/  __(__  ) /_   _/ /(__  ) / /_/ / / / / /_/ /  
+/_/    \___/_/ /_/\__/\___/____/\__/  /___/____/_/\__,_/_/ /_/\__,_/   
+                                                                       
+    ''')
+
+def main():
+    logo()
+    choice = input("""
+=====================================================================
+    Welcome to Pentest Island! Another Pentesting Adventure Awaits!
+          Where to Next?: 
+                   1.) Robot Factory (Setup)
+                   2.) Portrait Gallery (OSINT)
+                   3.) Lookout Peak (Enumeration)
+                   4.) Town Hall (Parsing)
+                   5.) Bandit's Shantytown (Exploitation)
+                   6.) Grand Tour (Full Automation)
+                                                         (Q)uit
+          """)
+    match choice:
+        case "1":
+            import setup.setup as setup
+            setup.flow()
+        case "2":
+            import osint.osint as osint
+            osint.flow()
+        case "3":
+            import enumeration.enum as enum
+            enum.flow()
+        case "4":
+            import parsing.clerk as clerk
+            clerk.flow()
+        case "5":
+            print(f"{Fore.YELLOW}Bandit's Shantytown (Exploitation) - Coming Soon!{Fore.RESET}")
+            print(f"{Fore.CYAN}This module will handle O365 password spraying and credential validation.{Fore.RESET}")
+        case "6":
+            print(f"{Fore.YELLOW}Starting Grand Tour (Full Automation)...{Fore.RESET}")
+            print(f"{Fore.CYAN}This will orchestrate: Setup → OSINT → Enumeration → Parsing{Fore.RESET}")
+            confirm = input(f"{Fore.CYAN}Continue? (y/N): {Fore.RESET}")
+            if confirm.lower() == 'y':
+                print(f"{Fore.GREEN}[1/4] Robot Factory (Setup)...{Fore.RESET}")
+                setup.flow()
+
+                print(f"{Fore.GREEN}[2/4] Portrait Gallery (OSINT)...{Fore.RESET}")
+                osint.flow()
+
+                print(f"{Fore.GREEN}[3/4] Lookout Peak (Enumeration)...{Fore.RESET}")
+                import enumeration.enum as enum
+                enum.flow()
+
+                print(f"{Fore.GREEN}[4/4] Town Hall (Parsing)...{Fore.RESET}")
+                print(f"{Fore.CYAN}Parsing scan results automatically...{Fore.RESET}")
+                import parsing.clerk as clerk
+                clerk.NmapParser.grepLive('connect_scan.gnmap', 'live_hosts.txt')
+                clerk.NmapParser.grepOpenPorts('port_scan.gnmap', 'open_ports.txt')
+
+                print(f"{Fore.GREEN}✓ Grand Tour Complete!{Fore.RESET}")
+            else:
+                print(f"{Fore.YELLOW}Grand Tour Cancelled.{Fore.RESET}")
+        case "Q"|"q":
+            sys.exit()
+        case _:
+            print("Main Menu Only Accepts ints or Q!")
+
+if __name__ == "__main__": main()

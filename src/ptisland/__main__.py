@@ -1,6 +1,3 @@
-import warnings
-warnings.filterwarnings("ignore", category=SyntaxWarning)
-
 from colorama import Fore, Style
 import sys
 
@@ -43,7 +40,7 @@ def logo():
                                                                        
     ''')
 
-def ptimenu():
+def main():
     logo()
     choice = input("""
 =====================================================================
@@ -102,4 +99,4 @@ def ptimenu():
         case _:
             print("Main Menu Only Accepts ints or Q!")
 
-ptimenu()
+if __name__ == "__main__": main()

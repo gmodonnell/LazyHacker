@@ -11,9 +11,9 @@ ptisland main menu.
 """
 
 from colorama import Fore
-import parsing.clerk as clerk
+import ptisland.parsing.clerk as clerk
 import subprocess
-from art.art import mountain
+from ptisland.art.art import mountain
 
 # Scanning Class handles port scanning objects
 class Scanning:

@@ -32,7 +32,7 @@ import json
 import shutil
 import appdirs
 
-from art.art import robot
+from ptisland.art.art import robot
 
  
 # Internal Setup Function. Triggered by Menu
