@@ -56,16 +56,16 @@ def main():
           """)
     match choice:
         case "1":
-            import setup.setup as setup
+            from .setup import setup
             setup.flow()
         case "2":
-            import osint.osint as osint
+            from .osint import osint
             osint.flow()
         case "3":
-            import enumeration.enum as enum
+            from .enumeration import enum
             enum.flow()
         case "4":
-            import parsing.clerk as clerk
+            from .parsing import clerk
             clerk.flow()
         case "5":
             print(f"{Fore.YELLOW}Bandit's Shantytown (Exploitation) - Coming Soon!{Fore.RESET}")
