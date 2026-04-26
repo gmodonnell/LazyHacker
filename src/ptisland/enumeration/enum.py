@@ -25,7 +25,7 @@ class Scanning:
     #       as endpoints have been missed before.
     @staticmethod
     def connectScan(scope, exclude, outfile):
-        cmd = ['nmap','-sn','-oG',outfile,'-iL',scope,'--excludefile',exclude, '--max-retries', '1', '--max-rtt-timeout', '800']
+        cmd = ['nmap','-sn','-oG',outfile,'-iL',scope,'--excludefile',exclude, '--max-retries', '1', '--max-rtt-timeout', '800ms']
         try:
             result = subprocess.run(cmd, check=True, capture_output=True, text=True)
             return True, result.stdout
