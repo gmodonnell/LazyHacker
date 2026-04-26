@@ -20,28 +20,30 @@ from ptisland.art.art import clerk
 #   categories of outfile
 class NmapParser:
     # Greps live hosts from an gnmap file
+    @staticmethod
     def grepLive(gnmapfile, outfile):
         with open(gnmapfile, 'r') as f, open(outfile, 'w') as out:
             for line in f:
-                    if 'Status: Up' in line:
-                        host = line.split()[1]
-                        out.write(host + '\n')
+                if 'Status: Up' in line:
+                    host = line.split()[1]
+                    out.write(host + '\n')
 
     # Pulls open ports from a gnmap file.
     # Mimics old bash grepcut mess from scanningutils.py:27
+    @staticmethod
     def grepOpenPorts(gnmapfile, outfile):
+        openports = set()
         with open(gnmapfile) as f:
-            openports = {
-                int(port)
-                # grep "/open/"
-                for line in f if '/open/' in line
-                # cut -d " " -f 4- | tr "," "\n"
-                for entry in ' '.join(line.split()[3:].split(','))
-                # cut -d "/" -f 1
-                if (port := entry.strip().split('/')[0].isdigit())
-            }
+            for line in f:
+                if '/open/' not in line or 'Ports:' not in line:
+                    continue
+                # Split off everything after "Ports:" and before any "Ignored State:" trailer
+                ports_section = line.split('Ports:', 1)[1].split('Ignored State:', 1)[0]
+                for token in ports_section.split(','):
+                    port_str = token.strip().split('/')[0]
+                    if port_str.isdigit():
+                        openports.add(int(port_str))
 
-        # Sort numerically and write to file
         with open(outfile, 'w') as out:
             for port in sorted(openports):
                 out.write(f"{port}\n")
@@ -122,20 +124,22 @@ def darkowlcsv(results):
 # Out: True if parse is successful (bool)
 # Out: False if no data to parse (bool)
 def urlcsv(results):
-    with open(results, "r") as r:
+    with open(results, "r") as r, open("urlreport.csv", "w", newline='') as f:
         urls = csv.reader(r)
-        with open("urlreport.csv", "w", newline='') as f:
-            output = csv.writer(f)
+        output = csv.writer(f)
         # Transfers only URLs which resolve DNS
         for row in urls:
+            if len(row) < 10:
+                continue
             # URLs which return completely empty DNS output get skipped
-            if any(row[i] == "" for i in range(4,10)):
-                pass
-            else:
-                # If DNS information is located, write the typo type,
-                # domain and tld as 3 columns for reporting.
-                parts = row[1].split('.', 1)
-                output.writerow([row[0],parts[0],parts[1]])
+            if any(row[i] == "" for i in range(4, 10)):
+                continue
+            if '.' not in row[1]:
+                continue
+            # If DNS information is located, write the typo type,
+            # domain and tld as 3 columns for reporting.
+            parts = row[1].split('.', 1)
+            output.writerow([row[0], parts[0], parts[1]])
 
 # Credential concat into wordlist of names
 # IN: Dehashed credential csv (csv)

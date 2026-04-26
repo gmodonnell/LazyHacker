@@ -42,10 +42,11 @@ def logo():
 
 def main():
     logo()
-    choice = input("""
+    while True:
+        choice = input("""
 =====================================================================
     Welcome to Pentest Island! Another Pentesting Adventure Awaits!
-          Where to Next?: 
+          Where to Next?:
                    1.) Robot Factory (Setup)
                    2.) Portrait Gallery (OSINT)
                    3.) Lookout Peak (Enumeration)
@@ -54,49 +55,52 @@ def main():
                    6.) Grand Tour (Full Automation)
                                                          (Q)uit
           """)
-    match choice:
-        case "1":
-            import setup.setup as setup
-            setup.flow()
-        case "2":
-            import osint.osint as osint
-            osint.flow()
-        case "3":
-            import enumeration.enum as enum
-            enum.flow()
-        case "4":
-            import parsing.clerk as clerk
-            clerk.flow()
-        case "5":
-            print(f"{Fore.YELLOW}Bandit's Shantytown (Exploitation) - Coming Soon!{Fore.RESET}")
-            print(f"{Fore.CYAN}This module will handle O365 password spraying and credential validation.{Fore.RESET}")
-        case "6":
-            print(f"{Fore.YELLOW}Starting Grand Tour (Full Automation)...{Fore.RESET}")
-            print(f"{Fore.CYAN}This will orchestrate: Setup → OSINT → Enumeration → Parsing{Fore.RESET}")
-            confirm = input(f"{Fore.CYAN}Continue? (y/N): {Fore.RESET}")
-            if confirm.lower() == 'y':
-                print(f"{Fore.GREEN}[1/4] Robot Factory (Setup)...{Fore.RESET}")
+        match choice:
+            case "1":
+                import ptisland.setup.setup as setup
                 setup.flow()
-
-                print(f"{Fore.GREEN}[2/4] Portrait Gallery (OSINT)...{Fore.RESET}")
+            case "2":
+                import ptisland.osint.osint as osint
                 osint.flow()
-
-                print(f"{Fore.GREEN}[3/4] Lookout Peak (Enumeration)...{Fore.RESET}")
-                import enumeration.enum as enum
+            case "3":
+                import ptisland.enumeration.enum as enum
                 enum.flow()
+            case "4":
+                import ptisland.parsing.clerk as clerk
+                clerk.flow()
+            case "5":
+                print(f"{Fore.YELLOW}Bandit's Shantytown (Exploitation) - Coming Soon!{Fore.RESET}")
+                print(f"{Fore.CYAN}This module will handle O365 password spraying and credential validation.{Fore.RESET}")
+            case "6":
+                print(f"{Fore.YELLOW}Starting Grand Tour (Full Automation)...{Fore.RESET}")
+                print(f"{Fore.CYAN}This will orchestrate: Setup → OSINT → Enumeration → Parsing{Fore.RESET}")
+                confirm = input(f"{Fore.CYAN}Continue? (y/N): {Fore.RESET}")
+                if confirm.lower() == 'y':
+                    import ptisland.setup.setup as setup
+                    import ptisland.osint.osint as osint
+                    import ptisland.enumeration.enum as enum
+                    import ptisland.parsing.clerk as clerk
 
-                print(f"{Fore.GREEN}[4/4] Town Hall (Parsing)...{Fore.RESET}")
-                print(f"{Fore.CYAN}Parsing scan results automatically...{Fore.RESET}")
-                import parsing.clerk as clerk
-                clerk.NmapParser.grepLive('connect_scan.gnmap', 'live_hosts.txt')
-                clerk.NmapParser.grepOpenPorts('port_scan.gnmap', 'open_ports.txt')
+                    print(f"{Fore.GREEN}[1/4] Robot Factory (Setup)...{Fore.RESET}")
+                    setup.flow()
 
-                print(f"{Fore.GREEN}✓ Grand Tour Complete!{Fore.RESET}")
-            else:
-                print(f"{Fore.YELLOW}Grand Tour Cancelled.{Fore.RESET}")
-        case "Q"|"q":
-            sys.exit()
-        case _:
-            print("Main Menu Only Accepts ints or Q!")
+                    print(f"{Fore.GREEN}[2/4] Portrait Gallery (OSINT)...{Fore.RESET}")
+                    osint.flow()
+
+                    print(f"{Fore.GREEN}[3/4] Lookout Peak (Enumeration)...{Fore.RESET}")
+                    enum.flow()
+
+                    print(f"{Fore.GREEN}[4/4] Town Hall (Parsing)...{Fore.RESET}")
+                    print(f"{Fore.CYAN}Parsing scan results automatically...{Fore.RESET}")
+                    clerk.NmapParser.grepLive('connect_scan.gnmap', 'live_hosts.txt')
+                    clerk.NmapParser.grepOpenPorts('port_scan.gnmap', 'open_ports.txt')
+
+                    print(f"{Fore.GREEN}✓ Grand Tour Complete!{Fore.RESET}")
+                else:
+                    print(f"{Fore.YELLOW}Grand Tour Cancelled.{Fore.RESET}")
+            case "Q"|"q":
+                sys.exit()
+            case _:
+                print("Enter 1-6 or Q.")
 
 if __name__ == "__main__": main()

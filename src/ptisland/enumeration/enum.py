@@ -23,6 +23,7 @@ class Scanning:
     # OUT: .gnmap of live hosts (ping responding)
     # TODO: Determine if -sn (ICMP) is the best way to do this
     #       as endpoints have been missed before.
+    @staticmethod
     def connectScan(scope, exclude, outfile):
         cmd = ['nmap','-sn','-oG',outfile,'-iL',scope,'--excludefile',exclude, '--max-retries', '1', '--max-rtt-timeout', '800']
         try:
@@ -32,12 +33,13 @@ class Scanning:
             return False, e.stderr
         except FileNotFoundError:
             return False, "nmap not found"
-    
+
 
     # Conducts a Port Scan of TCP 1-65535 and UDP 161,500 (in interest of time)
     # IN: scopefile of desired hosts to scan (from connectScan)
     # OUT: gnmap of open ports on target systems
     # Currently does not have exclude support
+    @staticmethod
     def portScan(livescope, outfile):
         # UDP ports restricted to 161 and 500 in the interest of time
         cmd = ['nmap','-sS','-sU','-p','T:1-65535,U:161,500','--open','-oG', outfile, '-iL', livescope]
@@ -49,17 +51,25 @@ class Scanning:
         except subprocess.CalledProcessError as e:
             return False, e.stderr
 
-    # Performs an nmap scan against all discovered ports
-    # IN: scope (typically from portScan)
-    # IN: ports (from clerk.grepOpenPorts())
-    # OUT: TWO arrays, TCP and UDP ports in format int,int,int
-    # TODO: Figure out why I commented this would output 2 arrays of ports.
-    # TODO: ensure generating this output is POSSIBLE and
-    #       MORE ACCURATE than simply mimicking the old implementation.
-    def scriptScan(live_hosts, ports):
-        # nmap -sS -sU -sV -p $ports -oA nmap_scan -iL live_hosts.txt
-        cmd = []
-        subprocess.run(cmd)
+    # Performs a service-detection nmap scan against the discovered open ports
+    # on the live hosts.
+    # IN: live_hosts (path to livescope file from connectScan)
+    # IN: ports (iterable of ints from clerk.NmapParser.grepOpenPorts())
+    # IN: outfile (gnmap output path)
+    # OUT: (success: bool, output: str)
+    @staticmethod
+    def scriptScan(live_hosts, ports, outfile):
+        if not ports:
+            return False, "no ports provided"
+        portspec = ','.join(str(p) for p in ports)
+        cmd = ['nmap', '-sV', '-p', portspec, '--open', '-oA', outfile, '-iL', live_hosts]
+        try:
+            result = subprocess.run(cmd, check=True, capture_output=True, text=True)
+            return True, result.stdout
+        except FileNotFoundError:
+            return False, "nmap not found"
+        except subprocess.CalledProcessError as e:
+            return False, e.stderr
 
 # WebEnum class handles functions which are
 # responsible for subdomain enumeration and
@@ -67,7 +77,7 @@ class Scanning:
 class WebEnum:
     pass
 
-# Rhns the Enumeration Flow
+# Runs the Enumeration Flow
 # TODO: Take out the hardcoded scope and exclude names
 #           `- This may not be necessary
 def flow():
@@ -107,8 +117,16 @@ def flow():
             
             # Service Scan Begins Here
             print(f"{Fore.YELLOW}[3/3] Performing Service Scan...{Fore.RESET}")
-            # TODO: Implement Scanning.scriptScan here.
-        
+            clerk.NmapParser.grepOpenPorts('port_scan.gnmap', 'open_ports.txt')
+            with open('open_ports.txt') as pf:
+                ports = [int(p) for p in pf.read().split() if p.strip().isdigit()]
+            success, output = Scanning.scriptScan('live_hosts.txt', ports, 'script_scan')
+            if success:
+                print(f"{Fore.GREEN}Service Scan Complete{Fore.RESET}")
+            else:
+                print(f"{Fore.RED}✗ Service Scan Failed: {output}{Fore.RESET}")
+                return
+
         case "2":
             print(f"{Fore.GREEN}Running Quick Scan...{Fore.RESET}")
             print(f"{Fore.YELLOW}[1/2] Performing connect scan...{Fore.RESET}")

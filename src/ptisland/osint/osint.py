@@ -64,9 +64,7 @@ class OsintApi:
             print(f"{Fore.RED}Error connecting to the API:{Fore.RESET} {e}")
             return False
 
-    # The main darkowl function that I am using
-    # to hold everything together because I 
-    # actually have no idea how to write code
+    # Convenience wrapper: query darkowl and write the CSV via clerk.darkowlcsv.
     def darkowlpull(domain):
         dodata = OsintApi.darkowlquery(domain)
         clerk.darkowlcsv(dodata)
@@ -268,9 +266,10 @@ class nameScraper:
 
 # Cute menu to tie this all together.
 def flow():
+    import os
     # Hardcoded names for cred pull files.
     dehashedfile = 'dehashed.csv'
-    darkowlfile =  'darkowl.csv'
+    darkowlfile = 'darkowl.csv'
     domain = input("Type the target domain: ")
     print(f"{Fore.YELLOW}Targeting Domain: {Fore.RESET}{domain}")
     print(f"{Fore.GREEN}Starting li2u...{Fore.RESET}")
@@ -278,10 +277,13 @@ def flow():
     # OsintApi.darkowlpull(domain)
     # OsintApi.dehashedV2Query(domain)
     # Concat username file and generate cred report
-    clerk.credconcat(dehashedfile, darkowlfile)
-    clerk.credprep(dehashedfile, darkowlfile)
+    missing = [p for p in (dehashedfile, darkowlfile) if not os.path.exists(p)]
+    if missing:
+        print(f"{Fore.YELLOW}Skipping credential prep — missing input file(s): {', '.join(missing)}{Fore.RESET}")
+    else:
+        clerk.credconcat(dehashedfile, darkowlfile)
+        clerk.credprep(dehashedfile, darkowlfile)
     # Audit DNS and URL Permutations
     DNSAudit.dmarcPull(domain)
     DNSAudit.spfPull(domain)
     URLAudit.callURLCrazy(domain)
-    pass
