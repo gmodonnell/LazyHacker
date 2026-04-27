@@ -55,34 +55,9 @@ def main():
                    6.) Grand Tour (Full Automation)
                                                          (Q)uit
           """)
-<<<<<<< HEAD
         match choice:
             case "1":
                 import ptisland.setup.setup as setup
-=======
-    match choice:
-        case "1":
-            from .setup import setup
-            setup.flow()
-        case "2":
-            from .osint import osint
-            osint.flow()
-        case "3":
-            from .enumeration import enum
-            enum.flow()
-        case "4":
-            from .parsing import clerk
-            clerk.flow()
-        case "5":
-            print(f"{Fore.YELLOW}Bandit's Shantytown (Exploitation) - Coming Soon!{Fore.RESET}")
-            print(f"{Fore.CYAN}This module will handle O365 password spraying and credential validation.{Fore.RESET}")
-        case "6":
-            print(f"{Fore.YELLOW}Starting Grand Tour (Full Automation)...{Fore.RESET}")
-            print(f"{Fore.CYAN}This will orchestrate: Setup → OSINT → Enumeration → Parsing{Fore.RESET}")
-            confirm = input(f"{Fore.CYAN}Continue? (y/N): {Fore.RESET}")
-            if confirm.lower() == 'y':
-                print(f"{Fore.GREEN}[1/4] Robot Factory (Setup)...{Fore.RESET}")
->>>>>>> 988459ef22e49a7f510d1bef56e8dcc53d03b93e
                 setup.flow()
             case "2":
                 import ptisland.osint.osint as osint
